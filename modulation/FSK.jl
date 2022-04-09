@@ -4,7 +4,7 @@ module FSK
 
     using Plots, FFTW
 
-    function modulate(bit_stream::String, bits_to_send::Int, pulses_per_second::Int, fs::Float64 = 48000)
+    function modulate(bit_stream::String, bits_to_send::Int, pulses_per_second::Int, fs::Int = 48000)
 
         Δt = 1/fs; t = 0:Δt:(length(bit_stream)/bits_to_send-Δt)/pulses_per_second;
 
@@ -42,11 +42,11 @@ module FSK
     end
 
 
-    function demodulate(signal, bits_to_send::Int, p::Int, spacing::Int, frequencies, fs::Float64 = 48000)
+    function demodulate(signal, bits_to_send::Int, p::Int, spacing::Int, frequencies, fs::Int = 48000)
 
-        strt = 1
+        start = 1
         slice = Int(floor(fs/(bits_to_send * p)))
-        end_ = Int(floor(strt + slice))
+        end_ = Int(floor(start + slice))
         
         Δt = 1/fs
         t = 0:Δt:(length(signal) - 1)* Δt
@@ -54,9 +54,9 @@ module FSK
         msg = "";
         
         while end_ <= length(signal)
-            # global strt; global end_; local stop; global msg;
-            t_slice = t[strt:end_]
-            y1_slice = signal[strt:end_]
+            # global start; global end_; local stop; global msg;
+            t_slice = t[start:end_]
+            y1_slice = signal[start:end_]
         #     plot_td(t_slice, y1_slice, "Modulated output at receiver","Time","Amplitude");
         #     plot_fd(t_slice, y1_slice, "Modulated output at receiver","Time","Amplitude");
             
@@ -84,7 +84,7 @@ module FSK
             end
         #     @show (f[ind] - f1)
             
-            strt += slice
+            start += slice
             end_ += slice
             
         end
