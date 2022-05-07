@@ -1,6 +1,6 @@
 
 
-function hamming_encode(bits, n, k)
+function hamming_encode(bits::String, n::Int, k::Int)
 
     # using 7,4 hamming code
 
@@ -11,7 +11,7 @@ function hamming_encode(bits, n, k)
     
     for i in 1:length(encoded)
         if !(i in parity_bits) # fill bits in non parity positions
-            encoded[i] = bits[j]
+            encoded[i] = parse(Int, bits[j])
             j += 1
         end
 
@@ -31,12 +31,6 @@ function hamming_encode(bits, n, k)
         encoded[bit] = reduce(xor, parity)
     end
 
-    return encoded
-
+    return reduce(*, string.(encoded))
 end
 
-bits = [rand(0:1) for i in 1:4]
-
-println(bits)
-println(hamming_encode(bits, 7, 4))
-println(reduce(xor, [bit for bit in hamming_encode(bits, 7, 4) if bit==1]))

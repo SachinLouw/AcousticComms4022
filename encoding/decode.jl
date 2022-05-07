@@ -8,3 +8,22 @@ function hamming_syndrome(bits)
     return reduce(xor, [i for (i, bit) in enumerate(bits) if bit==1])
 
 end
+
+function hamming_decode(bits)
+
+    decoded = "" #[]
+
+    for i in 3:length(bits) # skips power of 2 indexes, we know 1=2^0 and 2 = 2^1
+
+        if !(isinteger(log2(i)))
+            # append!(decoded, bits[i])
+            decoded = decoded * bits[i]
+        end
+
+    end
+
+    return decoded
+
+end
+
+# @show hamming_decode("00111111111000000"[1:15])

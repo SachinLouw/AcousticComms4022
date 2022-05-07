@@ -37,7 +37,7 @@ module FSK
             
         end
 
-        return modulated_signal, spacing, frequencies
+        return modulated_signal
 
     end
 
@@ -52,14 +52,18 @@ module FSK
         t = 0:Δt:(length(signal) - 1)* Δt
         
         msg = "";
+
+        t_array, signal_array = [], []
         
-        while end_ <= length(signal)
+        while end_ < length(signal) # using < inst of <= to remove extra bit
+             
             # global start; global end_; local stop; global msg;
             t_slice = t[start:end_]
             y1_slice = signal[start:end_]
         #     plot_td(t_slice, y1_slice, "Modulated output at receiver","Time","Amplitude");
         #     plot_fd(t_slice, y1_slice, "Modulated output at receiver","Time","Amplitude");
-            
+            append!(t_array); append!(signal_array);
+
             Y1 = abs.(fft(y1_slice))
             
             N = length(y1_slice);
@@ -81,6 +85,7 @@ module FSK
                 elseif indexin(j, frequencies)[1] >= length(frequencies)
                     msg = msg * "*" # could not determine bit or end of bits
                 end
+                
             end
         #     @show (f[ind] - f1)
             
@@ -90,6 +95,7 @@ module FSK
         end
         
         @show msg;
+        return msg, t_array, signal_array
 
     end
 
