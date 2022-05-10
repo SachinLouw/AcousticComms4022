@@ -9,7 +9,7 @@ function hamming_syndrome(bits)
 
 end
 
-function hamming_decode(bits)
+function hamming_decode(bits::String)
 
     decoded = "" #[]
 
@@ -26,4 +26,20 @@ function hamming_decode(bits)
 
 end
 
-# @show hamming_decode("00111111111000000"[1:15])
+function hamming_decode(bits)
+
+    decoded = []
+    # @show bits
+
+    for i in 3:length(bits) # skips power of 2 indexes, we know 1=2^0 and 2 = 2^1
+
+        if !(isinteger(log2(i)))
+            # append!(decoded, bits[i])
+            decoded = [decoded; bits[i]]
+        end
+
+    end
+    # @show decoded
+    return Vector{Int}(decoded)
+
+end

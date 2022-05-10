@@ -34,3 +34,36 @@ function hamming_encode(bits::String, n::Int, k::Int)
     return reduce(*, string.(encoded))
 end
 
+function hamming_encode(bits, n::Int, k::Int)
+
+
+    encoded = Int.(zeros(n))
+    parity_bits = [2^(i-1) for i in 1:n-k]
+    
+    j = 1; # scope issue
+    
+    for i in 1:length(encoded)
+        if !(i in parity_bits) # fill bits in non parity positions
+            encoded[i] = bits[j]
+            j += 1
+        end
+
+    end
+
+    for bit in parity_bits
+        
+        # check parity positions and xor bit positions using hamming encode algorithm
+
+        parity = [] 
+        for i in 1:length(encoded)
+
+            if i & bit != 0 && i != bit
+                append!(parity, encoded[i])
+            end
+        end
+        encoded[bit] = reduce(xor, parity)
+    end
+
+    return encoded
+end
+
