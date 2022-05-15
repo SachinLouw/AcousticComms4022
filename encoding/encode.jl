@@ -1,4 +1,5 @@
 
+include("decode.jl")
 
 function hamming_encode(bits::String, n::Int, k::Int)
 
@@ -67,3 +68,15 @@ function hamming_encode(bits, n::Int, k::Int)
     return encoded
 end
 
+function majority_logic_encode(bits, n::Int)
+
+    encoded = Int.(zeros(length(bits), n)); i = 1;
+
+    for b in bits # fill each row with one bit
+        encoded[i,:] .= b; i += 1
+    end
+
+    return encoded
+
+end
+    
