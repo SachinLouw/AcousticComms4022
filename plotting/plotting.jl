@@ -29,10 +29,11 @@ function plot_fd(x_data, y_data, plot_title="", plot_xlabel="", plot_ylabel="", 
     if ft == false # check if fft applied
 
         V = fft(y_data)
-        fig = plot(f, abs.(V[1:Int(floor(length(V)/2))]), color = colour)
+        fig = plot(f, abs.(V[1:Int(floor(length(V)/2))]), color = colour, xlim = (100,20000), ylim = (0,3))
 
     else
 
+        
         fig = plot(f, y_data, color = colour)
 
     end

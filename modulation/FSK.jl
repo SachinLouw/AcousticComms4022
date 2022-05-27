@@ -29,6 +29,7 @@ module FSK
 
     function demodulate(signal, bits_to_send::Int, pulses_per_second::Int, spacing::Int, frequencies, ratio::Int, n::Int, fs::Int = 48000)
 
+        
         start = 1
         slice = Int(floor(fs/(bits_to_send * pulses_per_second)))
         end_ = Int(floor(start + slice))
@@ -50,31 +51,34 @@ module FSK
             # append!(t_array); append!(signal_array);
 
             Y1 = abs.(fft(y1_slice))
-            
+            stop = Int(floor(length(Y1)/2))
             N = length(y1_slice);
             Δf = 1/(N*Δt)  # spacing in frequency domain
-        
-            stop = Int(floor(length(Y1)/2))
-        
             #create array of freq values stored in f_axis. First element maps to 0Hz
             f = (0:N-1)*Δf;    
+
+            B = 500 # filter bandwidth in Hz
+            rect(t) = (abs.(t).<=0.5)*1.0;
+            H = 1 .- (rect(f/(2π*B)) + rect( (f .- 1/Δt)/(2π*B) ));
+
+            # HPF to reject DC comp during recording
+            Y1 = conj(Y1).*H
+
             ind = Int(floor(findmax(Y1[1:stop])[2]))
-            
+            # @show f[ind]
             for j in frequencies
                 if abs(f[ind] - j) <= spacing/2
-                    # @show f[ind]
-                    # @show indexin(j, frequencies)[1]
                     bit = reverse(digits(indexin(j, frequencies)[1] - 1, base=2, pad = bits_to_send))
 
                     msg[msg_index:msg_index + bits_to_send - 1] = bit[end-(bits_to_send - 1):end]
-                    # @show msg[msg_index:msg_index + bits_to_send - 1]
-                    # @show msg_index
                     msg_index = msg_index + bits_to_send
-                    # println(msg_index)
-                    # break
+                    break
 
-                # elseif indexin(j, frequencies)[1] >= length(frequencies)
-                #     msg = msg * "*" # could not determine bit or end of bits
+                elseif j == frequencies[end] 
+                    bit = reverse(digits(0, base=2, pad = bits_to_send))
+
+                    msg[msg_index:msg_index + bits_to_send - 1] = bit[end-(bits_to_send - 1):end]
+                    msg_index = msg_index + bits_to_send
                 end
                 
             end
@@ -86,7 +90,7 @@ module FSK
         end
         
         # @show (msg);
-        @show transpose(msg);
+        # @show transpose(msg);
         return msg, t_array, signal_array
 
     end

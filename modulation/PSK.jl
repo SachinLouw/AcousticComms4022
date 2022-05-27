@@ -48,7 +48,7 @@ module PSK
             end
             # println(ensembles)
             
-            index = findmax(ensembles)[2]
+            index = findmin(ensembles)[2]
 
             bit = reverse(digits(index - 1, base=2, pad = bits_to_send))
             ensembles = []
@@ -60,7 +60,7 @@ module PSK
                     
         end
 
-        @show transpose(msg);
+        # @show transpose(msg);
         return msg, t_array, signal_array
 
     end

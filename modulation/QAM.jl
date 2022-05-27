@@ -10,7 +10,7 @@ module QAM
         
         for i in 1:bits_to_send:length(bit_stream)
             
-            for j in 1:2^bits_to_send/2
+            for j in 1:Int(2^bits_to_send/2)
                 seq = parse(Int, join(bit_stream[i:i+bits_to_send-1]); base=2) # row_bits bit seq casted as base 2 int, join method converts array chunk to string
                 if seq == j - 1
                     append!(modulated_signal, carriers[j][start(i):stop(i)] .+ carriers[j*2][start(i):stop(i)]);
